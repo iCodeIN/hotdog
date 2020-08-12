@@ -1,18 +1,17 @@
 defmodule Hotdog do
-  @moduledoc """
-  Documentation for `Hotdog`.
-  """
+  use Application
+  require Logger
+  alias Alchemy.Client
 
-  @doc """
-  Hello world.
+  def start(_type, _args) do
+    case Application.get_env(:hotdog, :token) do
+      nil ->
+        raise "HOTDOG_TOKEN environment variable is not set"
 
-  ## Examples
-
-      iex> Hotdog.hello()
-      :world
-
-  """
-  def hello do
-    :world
+      token ->
+        run = Client.start(token)
+        use Hotdog.Events
+        run
+    end
   end
 end
